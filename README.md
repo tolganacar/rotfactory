@@ -26,23 +26,32 @@ that signed the agreements, and a support address that bounces is a review rejec
 
 The game's own repository is **private**, and GitHub Pages does not serve private repositories on the free
 plan. Making it public is not an option before launch — the art, the content table and the merge rules are
-the game (`docs/SECURITY.md`). So the page lives in a second, public repository that holds nothing but
-these files:
+the game (`docs/SECURITY.md`). So the page is served from a second, public repository that holds nothing
+but these files.
+
+This folder stays the one source of truth: it is versioned with the game, so a change to an SDK and the
+change to the policy that describes it land in the same commit. The public repository is fed from it with
+`git subtree`, not with a `git init` in here — a repository nested inside a tracked folder is a mess that
+only shows up later.
+
+Once, to set it up:
 
 ```sh
-# 1. Create an empty public repo named "rotfactory" on github.com (no README, no .gitignore).
-# 2. From the project root:
-cd site
-git init -b main
-git add .
-git commit -m "The ROT FACTORY page: what it is, how to get help, and the privacy policy"
-git remote add origin git@github.com:<user>/rotfactory.git
-git push -u origin main
-# 3. On github.com: Settings > Pages > Source: "Deploy from a branch", branch "main", folder "/ (root)".
+# On github.com: New repository > name "rotfactory" > Public > no README, no .gitignore > Create.
+cd /Users/tolganacar/Desktop/rot-factory
+git remote add site git@github.com:tolganacar/rotfactory.git
+git subtree push --prefix site site main
+# On github.com: Settings > Pages > Source "Deploy from a branch", branch "main", folder "/ (root)".
 ```
 
-It is live a minute later at `https://<user>.github.io/rotfactory/`. Check `privacy.html` opens directly:
-store reviewers paste that exact URL, and a policy behind a redirect or a login is a rejection.
+Live a minute later at `https://tolganacar.github.io/rotfactory/`. Check that `privacy.html` opens
+directly: store reviewers paste that exact URL, and a policy behind a redirect or a login is a rejection.
+
+Afterwards, to publish a change:
+
+```sh
+git subtree push --prefix site site main
+```
 
 ## Keeping it honest
 
